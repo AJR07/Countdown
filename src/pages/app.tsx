@@ -1,3 +1,4 @@
+import "../css/master.css";
 import {
     createTheme,
     Grid,
@@ -8,6 +9,7 @@ import {
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import { ParallaxProvider } from 'react-scroll-parallax';
 import { themeOptions } from '../components/theme';
+import PageNotFound from './404/404';
 import Home from './home/home';
 
 export default function App() {
@@ -19,13 +21,18 @@ export default function App() {
                 fontSize={15}
                 sx={{
                     position: 'absolute',
-                    color: 'primary.main',
+                    color: 'primary.light',
                     marginLeft: '90vw',
                     marginTop: '95vh',
                 }}
             >
                 Made by: <a href='https://github.com/AJR07/countdown'>AJR07</a>
             </Typography>
+            <Routes>
+                <Route path="/" element={<Home/>}/>
+                <Route path="/home" element={<Home />} />
+                <Route path="*" element={<PageNotFound/>}/>
+            </Routes>
         </AppSettings>
     );
 }
@@ -41,16 +48,16 @@ function AppSettings(props: AppSettingsProps) {
                 <ParallaxProvider>
                     <ThemeProvider
                         theme={responsiveFontSizes(
-                            createTheme(themeOptions['blue'])
+                            createTheme(themeOptions["blue"])
                         )}
                     >
-                        <Grid
-                            container
-                            direction='row'
-                            sx={{ height: '100vh' }}
-                        >
-                            {props.children}
-                        </Grid>
+                            <Grid
+                                container
+                                direction='row'
+                                sx={{ height: '100vh' }}
+                            >
+                                {props.children}
+                            </Grid>
                     </ThemeProvider>
                 </ParallaxProvider>
             </BrowserRouter>
