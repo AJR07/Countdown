@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 
 export default function PageNotFound() {
     return (
-        <Stack sx ={{width: "100%"}}>
+        <Stack sx={{ width: '100%' }}>
             <Typography
                 variant='h2'
                 fontWeight={1000}
                 sx={{
                     color: 'error.light',
                     paddingTop: '5vh',
-                    textAlign: "center"
+                    textAlign: 'center',
                 }}
             >
                 ERROR 404
@@ -21,10 +21,11 @@ export default function PageNotFound() {
                 sx={{
                     color: 'warning.light',
                     paddingBottom: '5vh',
-                    textAlign: "center"
+                    textAlign: 'center',
                 }}
             >
-                This link does not exist. Please navigate to <Link to="/home">Home</Link> or another available link :D
+                This link does not exist. Please navigate to{' '}
+                <Link to='/home'>Home</Link> or another available link :D
             </Typography>
         </Stack>
     );

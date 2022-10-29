@@ -1,4 +1,4 @@
-import "../css/master.css";
+import '../css/master.css';
 import {
     createTheme,
     Grid,
@@ -29,9 +29,9 @@ export default function App() {
                 Made by: <a href='https://github.com/AJR07/countdown'>AJR07</a>
             </Typography>
             <Routes>
-                <Route path="/" element={<Home/>}/>
-                <Route path="/home" element={<Home />} />
-                <Route path="*" element={<PageNotFound/>}/>
+                <Route path='/' element={<Home />} />
+                <Route path='/home' element={<Home />} />
+                <Route path='*' element={<PageNotFound />} />
             </Routes>
         </AppSettings>
     );
@@ -48,16 +48,16 @@ function AppSettings(props: AppSettingsProps) {
                 <ParallaxProvider>
                     <ThemeProvider
                         theme={responsiveFontSizes(
-                            createTheme(themeOptions["blue"])
+                            createTheme(themeOptions['blue'])
                         )}
                     >
-                            <Grid
-                                container
-                                direction='row'
-                                sx={{ height: '100vh' }}
-                            >
-                                {props.children}
-                            </Grid>
+                        <Grid
+                            container
+                            direction='row'
+                            sx={{ height: '100vh' }}
+                        >
+                            {props.children}
+                        </Grid>
                     </ThemeProvider>
                 </ParallaxProvider>
             </BrowserRouter>

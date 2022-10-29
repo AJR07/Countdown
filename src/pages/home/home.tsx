@@ -24,11 +24,11 @@ export default function Home() {
                 </Typography>
             </Stack>
             <Typography
-                    variant='h5'
-                    fontWeight={510}
-                    sx={{ color: 'warning.dark', textAlign: 'center' }}
-                >
-                    Time is ticking...
+                variant='h5'
+                fontWeight={510}
+                sx={{ color: 'warning.dark', textAlign: 'center' }}
+            >
+                Time is ticking...
             </Typography>
         </Stack>
     );
