@@ -1,10 +1,10 @@
+import { Stack } from "@mui/material";
 import "./main.css";
 
 export default function Main() {
-
 	return (
-		<div className="center">
-			<h1 className="primary">COUNTDOWN</h1>
-		</div>
+		<Stack direction="row">
+			<h1 className="primary" style={{rotate:"90deg"}}>COUNTDOWN</h1>
+		</Stack>
 	)
 }
