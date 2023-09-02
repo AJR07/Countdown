@@ -3,9 +3,21 @@
     import type Countdown from "../types/countdown";
 
     const countdowns: Countdown[] = [
-        { title: "test", start: new Date("2023-03-25") },
-        { title: "test2", start: new Date("2023-03-24") },
-        { title: "test3", start: new Date("2023-06-24") },
+        {
+            title: "test",
+            start: new Date("2023-03-25"),
+            end: new Date("2024-03-26"),
+        },
+        {
+            title: "test2",
+            start: new Date("2023-03-24"),
+            end: new Date("2024-03-25"),
+        },
+        {
+            title: "test3",
+            start: new Date("2023-06-24"),
+            end: new Date("2024-06-25"),
+        },
     ];
 </script>
 

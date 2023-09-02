@@ -1,4 +1,5 @@
 export default interface Countdown {
-	title: string;
-	start: Date;
+    title: string;
+    start: Date;
+    end: Date;
 }
