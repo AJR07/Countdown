@@ -1,19 +1,27 @@
 <script lang="ts">
+    import { Modal, ActionIcon, Textarea } from "@svelteuidev/core";
+    import { Pencil2, Trash } from "radix-icons-svelte";
+    import { DateInput } from "date-picker-svelte";
     import type Countdown from "../types/countdown";
     import GetTimeLeft from "../utils/gettimeleft";
     import Number from "./Number.svelte";
+
     export let countdown: Countdown;
     export let currentDate: Date;
+    export let removeCountdown: (title: string) => void;
 
+    $: opened = false;
     $: timeLeft = GetTimeLeft(countdown.end, currentDate);
     $: totalTime = GetTimeLeft(countdown.end, countdown.start);
     $: percent = 100 - (timeLeft.total / totalTime.total) * 100;
-    $: progressBar = `background: linear-gradient(90deg, #b6e32d4d ${
-        percent - 0.1
-    }%, #000000 ${percent + 0.1}%)`;
 </script>
 
-<div class="countdown-block" style={progressBar}>
+<div
+    class="countdown-block"
+    style={`background: linear-gradient(90deg, #b6e32d4d ${
+        percent - 0.1
+    }%, #000000 ${percent + 0.1}%)`}
+>
     <div class="countdown-container">
         <h1 class="title">{countdown.title.toUpperCase()}:</h1>
         {#if timeLeft.total === 0}
@@ -34,12 +42,57 @@
     </div>
     <div id="manage-buttons">
         <p>{percent.toFixed(2)}%</p>
+        <div id="edit">
+            <ActionIcon
+                color="orange"
+                variant="filled"
+                on:click={() => (opened = true)}
+            >
+                <Pencil2 size={16} />
+            </ActionIcon>
+            <div />
+            <ActionIcon
+                color="red"
+                variant="filled"
+                on:click={() => removeCountdown(countdown.title)}
+            >
+                <Trash size={16} />
+            </ActionIcon>
+        </div>
     </div>
 </div>
 
+<!-- Edit -->
+<Modal
+    {opened}
+    on:close={() => (opened = false)}
+    title={`Edit The Countdown: ${countdown.title}`}
+>
+    <p>Title:</p>
+    <Textarea bind:value={countdown.title} />
+    <p>End Date:</p>
+    <DateInput
+        bind:value={countdown.end}
+        min={countdown.start}
+        max={new Date("2100-01-01")}
+        closeOnSelection={true}
+    />
+</Modal>
+
 <style>
+    /* For the date picker */
+    :root {
+        --date-picker-background: #1b1e27;
+        --date-picker-foreground: #f7f7f7;
+    }
+
+    #edit {
+        display: grid;
+        grid-template-columns: min-content 10px min-content;
+    }
+
     #ended {
-        color: red;
+        color: rgb(213, 189, 103);
         margin-left: 10px;
         font-size: 40px;
     }
