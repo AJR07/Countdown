@@ -14,6 +14,7 @@
     $: timeLeft = GetTimeLeft(countdown.end, currentDate);
     $: totalTime = GetTimeLeft(countdown.end, countdown.start);
     $: percent = 100 - (timeLeft.total / totalTime.total) * 100;
+    $: if (isNaN(percent)) percent = 100;
 </script>
 
 <div
@@ -41,7 +42,7 @@
         {/if}
     </div>
     <div id="manage-buttons">
-        <p>{percent.toFixed(2)}%</p>
+        <p>{percent.toFixed(3)}%</p>
         <div id="edit">
             <ActionIcon
                 color="orange"
