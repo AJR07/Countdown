@@ -2,11 +2,14 @@
     import Block from "./Block.svelte";
     import type Countdown from "../types/countdown";
 
+    // delete after test
+    const end = new Date();
+    end.setMinutes(new Date().getMinutes() + 1);
     const countdowns: Countdown[] = [
         {
             title: "test",
-            start: new Date("2023-03-25"),
-            end: new Date("2024-03-26"),
+            start: new Date(),
+            end: end,
         },
         {
             title: "test2",
@@ -19,6 +22,11 @@
             end: new Date("2024-06-25"),
         },
     ];
+
+    let currentDate = new Date();
+    setInterval(() => {
+        currentDate = new Date();
+    }, 1000);
 </script>
 
 <main>
@@ -27,7 +35,7 @@
     </div>
     <div>
         {#each countdowns as countdown}
-            <Block {countdown} />
+            <Block {countdown} {currentDate} />
         {/each}
     </div>
 </main>
