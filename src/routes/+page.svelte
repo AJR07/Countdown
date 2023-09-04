@@ -1,9 +1,24 @@
 <script lang="ts">
     import Block from "./Block.svelte";
     import type Countdown from "../types/countdown";
-    import { Button } from "@svelteuidev/core";
     import { Plus } from "radix-icons-svelte";
-    import { SvelteUIProvider, colorScheme } from "@svelteuidev/core";
+    import {
+        SvelteUIProvider,
+        Modal,
+        Textarea,
+        Button,
+    } from "@svelteuidev/core";
+    import { DateInput } from "date-picker-svelte";
+
+    // for modal
+    let opened: boolean;
+    let tempCountdown: Countdown;
+    let error: boolean;
+    $: {
+        opened = false;
+        tempCountdown = { title: "", start: new Date(), end: new Date() };
+        error = false;
+    }
 
     // delete after test
     const end = new Date();
@@ -46,7 +61,17 @@
             {#each Object.values(countdowns) as countdown}
                 <Block {countdown} {currentDate} {removeCountdown} />
             {/each}
-            <Button fullSize>
+            <Button
+                fullSize
+                on:click={() => {
+                    tempCountdown = {
+                        title: "",
+                        start: new Date(),
+                        end: new Date(),
+                    };
+                    opened = true;
+                }}
+            >
                 ADD
                 <Plus size={16} />
             </Button>
@@ -54,7 +79,49 @@
     </main>
 </SvelteUIProvider>
 
+<!-- Add countdowns -->
+<Modal {opened} on:close={() => (opened = false)} title="Add A Countdown">
+    <p>Title:</p>
+    <Textarea bind:value={tempCountdown.title} />
+    <p>End Date:</p>
+    <DateInput
+        bind:value={tempCountdown.end}
+        min={tempCountdown.start}
+        max={new Date("2100-01-01")}
+        closeOnSelection={true}
+    />
+
+    {#if error}
+        <p style="color: red;" id="error">Title is empty or already exists.</p>
+    {:else}
+        <p id="error" />
+    {/if}
+
+    <Button
+        color="green"
+        on:click={() => {
+            if (
+                tempCountdown.title === "" ||
+                Object.keys(countdowns).includes(tempCountdown.title)
+            ) {
+                error = true;
+            } else {
+                error = false;
+                countdowns[tempCountdown.title] = tempCountdown;
+                countdowns = countdowns;
+                opened = false;
+            }
+        }}
+    >
+        Add
+    </Button>
+</Modal>
+
 <style>
+    #error {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
     main {
         display: grid;
         grid-template-columns: 75px auto;
@@ -72,6 +139,7 @@
     }
 
     #title {
+        position: fixed;
         font-weight: bold;
         font-size: 50px;
         transform-origin: center;
