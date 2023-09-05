@@ -5,10 +5,12 @@
     import type Countdown from "../types/countdown";
     import GetTimeLeft from "../utils/gettimeleft";
     import Number from "./Number.svelte";
+    import { browser } from "$app/environment";
 
     export let countdown: Countdown;
     export let currentDate: Date;
     export let removeCountdown: (title: string) => void;
+    export let setLocalStorage: () => void;
 
     $: opened = false;
     $: timeLeft = GetTimeLeft(countdown.end, currentDate);
@@ -66,7 +68,10 @@
 <!-- Edit -->
 <Modal
     {opened}
-    on:close={() => (opened = false)}
+    on:close={() => {
+        opened = false;
+        setLocalStorage();
+    }}
     title={`Edit The Countdown: ${countdown.title}`}
 >
     <p>Title:</p>
