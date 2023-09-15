@@ -6,7 +6,16 @@ export function load({ params }: { params: any }): {
     body: "undefined" | Countdown;
 } {
     if (browser) {
-        let countdowns: Data = JSON.parse(localStorage.getItem("countdowns")!);
+        let countdowns: Data =
+            localStorage.getItem("countdowns") !== null
+                ? JSON.parse(localStorage.getItem("countdowns")!)
+                : {
+                      Example: {
+                          title: "Example",
+                          start: new Date("2000-01-01"),
+                          end: new Date("2100-01-01"),
+                      },
+                  };
         let title = params.title,
             start = parseInt(params.start)!,
             end = parseInt(params.end)!;
