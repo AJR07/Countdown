@@ -1,12 +1,15 @@
 import type Data from "../../../../types/data";
 import { browser } from "$app/environment";
+import type Countdown from "../../../../types/countdown";
 
-export function load({ params }: { params: any }) {
+export function load({ params }: { params: any }): {
+    body: "undefined" | Countdown;
+} {
     if (browser) {
         let countdowns: Data = JSON.parse(localStorage.getItem("countdowns")!);
         let title = params.title,
-            start = params.start,
-            end = params.end;
+            start = parseInt(params.start)!,
+            end = parseInt(params.end)!;
 
         // verification
         title = title.replace(/[^a-z0-9]/gi, "");
@@ -14,14 +17,21 @@ export function load({ params }: { params: any }) {
             title === "" ||
             title.length > 10 ||
             end < start ||
-            start <= Date.now()
+            start > Date.now() ||
+            Object.keys(countdowns).includes(title)
         ) {
-            return { body: null };
+            return { body: "undefined" };
         }
 
-        countdowns[title] = { start: start, end: end, title: title };
+        countdowns[title] = {
+            start: new Date(start),
+            end: new Date(end),
+            title: title,
+        };
         localStorage.setItem("countdowns", JSON.stringify(countdowns));
-        return { body: { title: title, start: start, end: end } };
+        return {
+            body: { title: title, start: new Date(start), end: new Date(end) },
+        };
     }
-    return { body: null };
+    return { body: "undefined" };
 }

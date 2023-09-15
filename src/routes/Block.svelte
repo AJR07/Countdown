@@ -1,6 +1,6 @@
 <script lang="ts">
     import { Modal, ActionIcon, Textarea } from "@svelteuidev/core";
-    import { Pencil2, Trash } from "radix-icons-svelte";
+    import { Pencil2, Trash, Share1 } from "radix-icons-svelte";
     import { DateInput } from "date-picker-svelte";
     import type Countdown from "../types/countdown";
     import GetTimeLeft from "../utils/gettimeleft";
@@ -11,11 +11,24 @@
     export let removeCountdown: (title: string) => void;
     export let setLocalStorage: () => void;
 
+    // modal 1 - edit
     $: opened = false;
+
+    // modal 2 - share
+    $: opened2 = false;
+
     $: timeLeft = GetTimeLeft(countdown.end, currentDate);
     $: totalTime = GetTimeLeft(countdown.end, countdown.start);
     $: percent = 100 - (timeLeft.total / totalTime.total) * 100;
     $: if (isNaN(percent)) percent = 100;
+
+    function generateLink() {
+        return `${
+            window.location.origin
+        }/${countdown.start.valueOf()}/${countdown.end.valueOf()}/${
+            countdown.title
+        }`;
+    }
 </script>
 
 <div
@@ -60,6 +73,14 @@
             >
                 <Trash size={16} />
             </ActionIcon>
+            <div />
+            <ActionIcon
+                color="green"
+                variant="filled"
+                on:click={() => (opened2 = true)}
+            >
+                <Share1 size={16} />
+            </ActionIcon>
         </div>
     </div>
 </div>
@@ -84,6 +105,21 @@
     />
 </Modal>
 
+<!-- Share -->
+<Modal
+    opened={opened2}
+    on:close={() => {
+        opened2 = false;
+    }}
+    title={`Share The Countdown: ${countdown.title}`}
+>
+    <p>
+        Share the countdown using this link: <a href={generateLink()}
+            >{generateLink()}</a
+        >
+    </p>
+</Modal>
+
 <style>
     /* For the date picker */
     :root {
@@ -93,7 +129,7 @@
 
     #edit {
         display: grid;
-        grid-template-columns: min-content 10px min-content;
+        grid-template-columns: min-content 10px min-content 10px min-content;
     }
 
     #ended {
@@ -131,5 +167,9 @@
         height: 100%;
         display: flex;
         align-items: center;
+    }
+
+    a {
+        color: rgb(76, 184, 57);
     }
 </style>
