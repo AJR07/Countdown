@@ -5,7 +5,6 @@
     import type Countdown from "../types/countdown";
     import GetTimeLeft from "../utils/gettimeleft";
     import Number from "./Number.svelte";
-    import { browser } from "$app/environment";
 
     export let countdown: Countdown;
     export let currentDate: Date;
@@ -110,7 +109,7 @@
 
     .countdown-container {
         display: grid;
-        grid-template-columns: 150px min-content min-content min-content min-content min-content;
+        grid-template-columns: 200px min-content min-content min-content min-content min-content;
     }
 
     .countdown-block {

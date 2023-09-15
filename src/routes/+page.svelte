@@ -97,7 +97,11 @@
 </SvelteUIProvider>
 
 <!-- Add countdowns -->
-<Modal {opened} on:close={() => (opened = false)} title="Add A Countdown">
+<Modal
+    {opened}
+    on:close={() => ((opened = false), (error = false))}
+    title="Add A Countdown"
+>
     <p>Title:</p>
     <Textarea bind:value={tempCountdown.title} />
     <p>End Date:</p>
@@ -109,7 +113,9 @@
     />
 
     {#if error}
-        <p style="color: red;" id="error">Title is empty or already exists.</p>
+        <p style="color: red;" id="error">
+            Title is empty, more than 10 characters or already exists.
+        </p>
     {:else}
         <p id="error" />
     {/if}
@@ -119,11 +125,17 @@
         on:click={() => {
             if (
                 tempCountdown.title === "" ||
-                Object.keys(countdowns).includes(tempCountdown.title)
+                Object.keys(countdowns).includes(tempCountdown.title) ||
+                tempCountdown.title.length > 10
             ) {
                 error = true;
             } else {
                 error = false;
+                // remove all non-alphanumeric characters
+                tempCountdown.title = tempCountdown.title.replace(
+                    /[^a-z0-9]/gi,
+                    ""
+                );
                 countdowns[tempCountdown.title] = tempCountdown;
                 countdowns = countdowns;
                 setLocalStorage();
