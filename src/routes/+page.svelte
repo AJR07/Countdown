@@ -89,8 +89,8 @@
                     opened = true;
                 }}
             >
-                ADD
                 <Plus size={16} />
+                ADD
             </Button>
         </div>
     </main>
@@ -158,8 +158,7 @@
     }
 
     #countdowns-list {
-        margin-top: 10px;
-        margin-bottom: 10px;
+        margin: 10px;
     }
 
     #title-container {
