@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Block from "./Block.svelte";
+    import Block from "../components/Block.svelte";
     import type Countdown from "../types/countdown";
     import type Data from "../types/data";
     import { Plus } from "radix-icons-svelte";
@@ -69,7 +69,8 @@
         <div id="title-container">
             <h id="title">COUNTDOWN</h>
         </div>
-        <div id="countdowns-list">
+        <div id="main-page-container">
+            <div id="auth-controls" />
             {#each Object.values(countdowns) as countdown}
                 <Block
                     {countdown}
@@ -157,7 +158,7 @@
         grid-template-columns: 75px auto;
     }
 
-    #countdowns-list {
+    #main-page-container {
         margin: 10px;
     }
 
