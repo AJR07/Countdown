@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { verifyMagicLinkOTP } from "$lib/supabase";
     import State from "../../../types/state";
 

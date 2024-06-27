@@ -25,7 +25,7 @@
     function generateLink() {
         return `${
             window.location.origin
-        }/${countdown.start.valueOf()}/${countdown.end.valueOf()}/${
+        }/add?start=${countdown.start.valueOf()}&end=${countdown.end.valueOf()}&title=${
             countdown.title
         }`;
     }

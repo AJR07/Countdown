@@ -1,11 +1,12 @@
-import type Data from "../../../../types/data";
+import type Data from "../../types/data";
 import { browser } from "$app/environment";
-import type Countdown from "../../../../types/countdown";
+import type Countdown from "../../types/countdown";
 
-export function load({ params }: { params: any }): {
-    body: "undefined" | Countdown;
+export function load({ url }): {
+    body: string | Countdown;
 } {
     if (browser) {
+        // default countdown
         let countdowns: Data =
             localStorage.getItem("countdowns") !== null
                 ? JSON.parse(localStorage.getItem("countdowns")!)
@@ -16,21 +17,23 @@ export function load({ params }: { params: any }): {
                           end: new Date("2100-01-01"),
                       },
                   };
-        let title = params.title,
-            start = parseInt(params.start)!,
-            end = parseInt(params.end)!;
+
+        // get parameters
+        let title = url.searchParams.get("title"),
+            start = parseInt(url.searchParams.get("start")!),
+            end = parseInt(url.searchParams.get("end")!);
 
         // verification
+        if (!title || title === "" || title.length > 10)
+            return { body: "Title must be between 1 and 10 characters" };
+        else if (end < start)
+            return { body: "End date must be after start date" };
+        else if (start > Date.now())
+            return { body: "Start date must be before current date" };
+        else if (Object.keys(countdowns).includes(title))
+            return { body: "Countdown with that title already exists" };
+
         title = title.replace(/[^a-z0-9]/gi, "");
-        if (
-            title === "" ||
-            title.length > 10 ||
-            end < start ||
-            start > Date.now() ||
-            Object.keys(countdowns).includes(title)
-        ) {
-            return { body: "undefined" };
-        }
 
         countdowns[title] = {
             start: new Date(start),

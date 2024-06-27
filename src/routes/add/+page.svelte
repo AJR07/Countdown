@@ -1,9 +1,9 @@
 <script lang="ts">
     import { Button } from "@svelteuidev/core";
-    import type Countdown from "../../../../types/countdown";
+    import type Countdown from "../../types/countdown";
 
     export let data: {
-        body: Countdown | "undefined";
+        body: Countdown | string;
     };
 </script>
 
@@ -12,27 +12,17 @@
         <h id="title">COUNTDOWN</h>
     </div>
     <div id="added">
-        {#if data.body === "undefined"}
-            <h1 class="heading">
-                Failed To Add Countdown, ensure that the following is valid!
-            </h1>
-            <p>
-                1. Title should have at least 1 character and at most 10 (all
-                non alphanumeric characters are removed)
-            </p>
-            <p>2. End Date should be later than Start Date</p>
-            <p>3. Start Date should be earlier or equals to the current date</p>
-            <p>4. Title of countdowns cannot be one that you already have</p>
+        {#if typeof data.body === "string"}
+            <div id="error" class="centered">
+                <h1 class="heading">
+                    Failed To Add Countdown, as "{data.body}".
+                </h1>
+            </div>
         {:else if data.body !== null}
             <h1 class="heading">Added A Countdown!</h1>
             <p>Title: {data.body.title}</p>
             <p>End Time: {data.body.start}</p>
             <p>Start Time: {data.body.end}</p>
-            <Button
-                on:click={() => (window.location.href = window.location.origin)}
-            >
-                Home
-            </Button>
         {:else}
             <p>Loading...</p>
         {/if}
@@ -47,6 +37,14 @@
     .heading {
         color: rgb(108, 220, 97);
     }
+
+    .centered {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     #title {
         position: fixed;
         font-weight: bold;
