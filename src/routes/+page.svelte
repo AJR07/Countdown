@@ -1,4 +1,5 @@
 <script lang="ts">
+    import Auth from "../components/auth/Auth.svelte";
     import Block from "../components/Block.svelte";
     import type Countdown from "../types/countdown";
     import type Data from "../types/data";
@@ -11,7 +12,6 @@
     } from "@svelteuidev/core";
     import { DateInput } from "date-picker-svelte";
     import { browser } from "$app/environment";
-    import Auth from "../components/auth/Auth.svelte";
 
     // for modal
     let opened: boolean;
@@ -122,6 +122,7 @@
     {/if}
 
     <Button
+        slot="leftIcon"
         color="green"
         on:click={() => {
             if (
