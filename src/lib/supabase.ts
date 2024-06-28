@@ -1,19 +1,16 @@
-import {
-    EmailOtpType,
-    MobileOtpType,
-    createClient,
-} from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 
 // Get Anon Key from Dotenv
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY!;
+console.log(SUPABASE_ANON_KEY);
 
 // Create a single supabase client for interacting with your database
-const supabase = createClient(
+export const supabase = createClient(
     "https://bbwzezdaeqapoeyiuoyo.supabase.co",
     SUPABASE_ANON_KEY
 );
 
-export default async function signInWithEmailMagicLink(email: string) {
+export async function signInWithEmailMagicLink(email: string) {
     const { data, error } = await supabase.auth.signInWithOtp({
         email: email,
         options: {

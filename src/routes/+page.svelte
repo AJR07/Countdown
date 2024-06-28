@@ -11,6 +11,7 @@
     } from "@svelteuidev/core";
     import { DateInput } from "date-picker-svelte";
     import { browser } from "$app/environment";
+    import Auth from "../components/auth/Auth.svelte";
 
     // for modal
     let opened: boolean;
@@ -54,8 +55,7 @@
     }
 
     function setLocalStorage() {
-        if (browser)
-            localStorage.setItem("countdowns", JSON.stringify(countdowns));
+        localStorage.setItem("countdowns", JSON.stringify(countdowns));
     }
 
     let currentDate = new Date();
@@ -70,7 +70,7 @@
             <h id="title">COUNTDOWN</h>
         </div>
         <div id="main-page-container">
-            <div id="auth-controls" />
+            <Auth />
             {#each Object.values(countdowns) as countdown}
                 <Block
                     {countdown}
