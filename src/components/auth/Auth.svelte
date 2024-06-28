@@ -88,12 +88,14 @@
                         alertSignIn = false;
                     }, 5000);
                 })
-                .catch(() => {
-                    // assume that you are rate limited for now
-                    alertRateLimited = true;
-                    setTimeout(() => {
-                        alertRateLimited = false;
-                    }, 5000);
+                .catch((error) => {
+                    if (error.status === 429) {
+                        // assume that you are rate limited for now
+                        alertRateLimited = true;
+                        setTimeout(() => {
+                            alertRateLimited = false;
+                        }, 5000);
+                    }
                 });
             showSignInModal = false;
         }}
