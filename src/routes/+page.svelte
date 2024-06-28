@@ -122,7 +122,6 @@
     {/if}
 
     <Button
-        slot="leftIcon"
         color="green"
         on:click={() => {
             if (
