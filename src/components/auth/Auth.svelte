@@ -1,10 +1,11 @@
 <script lang="ts">
-    import { signInWithEmailMagicLink, supabase } from "$lib/supabase";
+    import { signInWithEmailMagicLink, signOut, supabase } from "$lib/supabase";
     import { type UserResponse } from "@supabase/supabase-js";
     import { Alert, Badge, Button, Input, Modal } from "@svelteuidev/core";
     import { Enter, EnvelopeClosed, Exit } from "radix-icons-svelte";
+    import { page } from "$app/stores";
 
-    let user: null | UserResponse = null;
+    let user: UserResponse | null = null;
     supabase.auth.getUser().then((userData) => {
         user = userData;
     });
@@ -13,12 +14,17 @@
         showSignOutModal = false,
         signInEmail = "",
         alertSignIn = false,
-        alertSignOut = false;
+        alertSignOut = false,
+        alertRateLimited = false;
 </script>
+
+<!-- Main Auth Content - Sign In and Out -->
 
 {#if user && user.data.user}
     <div id="auth-control">
-        <Badge color="success">{user.data.user?.email}</Badge>
+        <Badge size="xl" color="blue"
+            >{user.data.user.email?.toLowerCase()}</Badge
+        >
         <Button
             on:click={() => {
                 showSignOutModal = true;
@@ -29,7 +35,7 @@
             Sign Out
         </Button>
     </div>
-{:else}
+{:else if user}
     <div id="auth-control">
         <Button
             on:click={() => {
@@ -41,6 +47,19 @@
             Sign In
         </Button>
     </div>
+{/if}
+
+<!-- Sign In Confirmation Message for user coming from Confirmation Link -->
+{#if $page.url.searchParams.get("magiclink") === "true"}
+    <Alert
+        override={{ marginBottom: "10px" }}
+        icon={Enter}
+        title="You're Signed In!"
+        color="green"
+    >
+        You have successfully signed in! Syncing will take place automatically
+        with your account. Have fun!
+    </Alert>
 {/if}
 
 <!-- Modal for Sign In -->
@@ -62,14 +81,21 @@
         color="green"
         fullSize
         on:click={() => {
-            signInWithEmailMagicLink(signInEmail);
+            signInWithEmailMagicLink(signInEmail)
+                .then(() => {
+                    alertSignIn = true;
+                    setTimeout(() => {
+                        alertSignIn = false;
+                    }, 5000);
+                })
+                .catch(() => {
+                    // assume that you are rate limited for now
+                    alertRateLimited = true;
+                    setTimeout(() => {
+                        alertRateLimited = false;
+                    }, 5000);
+                });
             showSignInModal = false;
-
-            // configure alert to show for 5 seconds
-            alertSignIn = true;
-            setTimeout(() => {
-                alertSignIn = false;
-            }, 5000);
         }}
     >
         Send Email
@@ -89,6 +115,18 @@
     </Alert>
 {/if}
 
+<!-- Alert to tell user to check email -->
+{#if alertRateLimited}
+    <Alert
+        override={{ marginBottom: "10px" }}
+        icon={EnvelopeClosed}
+        title="Sorry, please try again later."
+        color="red"
+    >
+        Due to rate limits, the email has not been sent. Please try again later.
+    </Alert>
+{/if}
+
 <!-- Modal for Sign Out -->
 <Modal
     opened={showSignOutModal}
@@ -102,16 +140,23 @@
 
     <Button
         override={{ marginTop: "1rem" }}
-        color="green"
+        color="orange"
         fullSize
         on:click={() => {
-            showSignOutModal = false;
+            signOut().then(() => {
+                showSignOutModal = false;
 
-            // configure alert to show for 5 seconds
-            alertSignOut = true;
-            setTimeout(() => {
-                alertSignOut = false;
-            }, 5000);
+                // configure alert to show for 5 seconds
+                alertSignOut = true;
+                setTimeout(() => {
+                    alertSignOut = false;
+                }, 5000);
+
+                // reset user
+                supabase.auth.getUser().then((userData) => {
+                    user = userData;
+                });
+            });
         }}
     >
         Sign Out
@@ -123,9 +168,9 @@
     <Alert
         override={{ marginBottom: "10px" }}
         icon={Exit}
-        title="You're Signed OUt!"
-        color="green"
-    />
+        title="You're Signed Out!"
+        color="green">Hooray?</Alert
+    >
 {/if}
 
 <style>

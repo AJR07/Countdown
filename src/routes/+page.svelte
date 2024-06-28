@@ -97,7 +97,7 @@
     </main>
 </SvelteUIProvider>
 
-<!-- Add countdowns -->
+<!-- Modal for adding countdowns -->
 <Modal
     {opened}
     on:close={() => ((opened = false), (error = false))}

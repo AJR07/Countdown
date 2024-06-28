@@ -13,18 +13,12 @@ export async function signInWithEmailMagicLink(email: string) {
     const { error } = await supabase.auth.signInWithOtp({
         email: email,
         options: {
-            emailRedirectTo: window.location.href,
+            emailRedirectTo: window.location.origin + "?magiclink=true",
         },
     });
     if (error) throw error;
 }
 
-export async function verifyMagicLinkOTP(token_hash: string, type: string) {
-    if (type !== "magiclink") return "Invalid OTP type";
-
-    const { error } = await supabase.auth.verifyOtp({
-        token_hash,
-        type: "magiclink",
-    });
-    return error;
+export async function signOut() {
+    await supabase.auth.signOut();
 }
