@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { Button } from "@svelteuidev/core";
     import type Countdown from "../../types/countdown";
 
     export let data: {
@@ -53,6 +52,7 @@
         transform: translate(-40%) rotate(90deg);
         text-shadow: 0px 0px 20px rgba(132, 205, 125, 0.764);
     }
+
     #title-container {
         display: flex;
         align-items: center;

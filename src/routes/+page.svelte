@@ -1,5 +1,6 @@
 <script lang="ts">
-    import Block from "./Block.svelte";
+    import Auth from "../components/auth/Auth.svelte";
+    import Block from "../components/Block.svelte";
     import type Countdown from "../types/countdown";
     import type Data from "../types/data";
     import { Plus } from "radix-icons-svelte";
@@ -54,8 +55,7 @@
     }
 
     function setLocalStorage() {
-        if (browser)
-            localStorage.setItem("countdowns", JSON.stringify(countdowns));
+        localStorage.setItem("countdowns", JSON.stringify(countdowns));
     }
 
     let currentDate = new Date();
@@ -69,7 +69,8 @@
         <div id="title-container">
             <h id="title">COUNTDOWN</h>
         </div>
-        <div id="countdowns-list">
+        <div id="main-page-container">
+            <Auth />
             {#each Object.values(countdowns) as countdown}
                 <Block
                     {countdown}
@@ -96,7 +97,7 @@
     </main>
 </SvelteUIProvider>
 
-<!-- Add countdowns -->
+<!-- Modal for adding countdowns -->
 <Modal
     {opened}
     on:close={() => ((opened = false), (error = false))}
@@ -157,7 +158,7 @@
         grid-template-columns: 75px auto;
     }
 
-    #countdowns-list {
+    #main-page-container {
         margin: 10px;
     }
 
