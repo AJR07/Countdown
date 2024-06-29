@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { signInWithEmailMagicLink, signOut, supabase } from "$lib/supabase";
+    import { supabase } from "$lib/supabase";
+    import { signInWithEmailMagicLink, signOut } from "$lib/auth";
     import { type UserResponse } from "@supabase/supabase-js";
     import { Alert, Badge, Button, Input, Modal } from "@svelteuidev/core";
     import { Enter, EnvelopeClosed, Exit } from "radix-icons-svelte";
