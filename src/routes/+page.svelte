@@ -1,7 +1,7 @@
 <script lang="ts">
     import Auth from "../components/Auth.svelte";
     import Block from "../components/Block.svelte";
-    import type Countdown from "../types/countdown";
+    import type { Countdown } from "../types/countdown";
     import { Plus } from "radix-icons-svelte";
     import {
         SvelteUIProvider,
@@ -10,12 +10,7 @@
         Button,
     } from "@svelteuidev/core";
     import { DateInput } from "date-picker-svelte";
-    import {
-        countdowns,
-        removeCountdown,
-        updateCountdown,
-        addCountdown,
-    } from "$lib/localDB";
+    import { countdowns, addCountdown } from "$lib/localDB";
 
     // for modal
     let opened = false;
@@ -41,7 +36,7 @@
         <div id="main-page-container">
             <Auth />
             {#each Object.values(countdowns) as countdown}
-                <Block {countdown} {currentDate} {removeCountdown} />
+                <Block {countdown} {currentDate} />
             {/each}
             <Button
                 fullSize

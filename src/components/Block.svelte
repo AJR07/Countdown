@@ -5,12 +5,11 @@
     import type { Countdown } from "../types/countdown";
     import GetTimeLeft from "../utils/gettimeleft";
     import Number from "./Number.svelte";
-    import { updateCountdown } from "$lib/localDB";
+    import { removeCountdown, updateCountdown } from "$lib/localDB";
 
     // imports
     export let countdown: Countdown;
     export let currentDate: Date;
-    export let removeCountdown: (title: string) => void;
 
     // states
     let newTitle = countdown.title,
