@@ -2,25 +2,31 @@
     import { Modal, ActionIcon, Textarea } from "@svelteuidev/core";
     import { Pencil2, Trash, Share1 } from "radix-icons-svelte";
     import { DateInput } from "date-picker-svelte";
-    import type Countdown from "../types/countdown";
+    import Countdown from "../types/countdown";
+    import ProcessedDate from "../types/date";
     import GetTimeLeft from "../utils/gettimeleft";
     import Number from "./Number.svelte";
+    import { updateCountdown } from "$lib/localDB";
 
+    // imports
     export let countdown: Countdown;
     export let currentDate: Date;
     export let removeCountdown: (title: string) => void;
-    export let setLocalStorage: () => void;
 
-    // modal 1 - edit
-    $: opened = false;
+    // states
+    let newTitle = countdown.title, newEnd = countdown.end;
+    let opened = false; // modal 1 - edit
+    let opened2 = false; // modal 2 - share
 
-    // modal 2 - share
-    $: opened2 = false;
+    // progress bar
+    let timeLeft: ProcessedDate, totalTime: ProcessedDate, percent: number;
 
-    $: timeLeft = GetTimeLeft(countdown.end, currentDate);
-    $: totalTime = GetTimeLeft(countdown.end, countdown.start);
-    $: percent = 100 - (timeLeft.total / totalTime.total) * 100;
-    $: if (isNaN(percent)) percent = 100;
+    $: {
+        timeLeft = GetTimeLeft(countdown.end, currentDate);
+        totalTime = GetTimeLeft(countdown.end, countdown.start);
+        percent = 100 - (timeLeft.total / totalTime.total) * 100;
+        if (isNaN(percent)) percent = 100;
+    }
 
     function generateLink() {
         return `${
@@ -90,15 +96,15 @@
     {opened}
     on:close={() => {
         opened = false;
-        setLocalStorage();
+        updateCountdown(countdown.title, {title: newTitle, start: countdown.start, end: newEnd});
     }}
     title={`Edit The Countdown: ${countdown.title}`}
 >
     <p>Title:</p>
-    <Textarea bind:value={countdown.title} />
+    <Textarea bind:value={newTitle} />
     <p>End Date:</p>
     <DateInput
-        bind:value={countdown.end}
+        bind:value={newEnd}
         min={countdown.start}
         max={new Date("2100-01-01")}
         closeOnSelection={true}

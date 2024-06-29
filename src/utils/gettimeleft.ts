@@ -1,4 +1,9 @@
-export default function GetTimeLeft(endDate: Date, currentDate: Date) {
+import ProcessedDate from "../types/date";
+
+export default function GetTimeLeft(
+    endDate: Date,
+    currentDate: Date
+): ProcessedDate {
     const total = Math.max(0, endDate.getTime() - currentDate.getTime());
 
     let foundNonZero = false;

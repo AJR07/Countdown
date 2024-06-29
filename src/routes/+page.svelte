@@ -1,8 +1,7 @@
 <script lang="ts">
-    import Auth from "../components/auth/Auth.svelte";
+    import Auth from "../components/Auth.svelte";
     import Block from "../components/Block.svelte";
     import type Countdown from "../types/countdown";
-    import type Data from "../types/data";
     import { Plus } from "radix-icons-svelte";
     import {
         SvelteUIProvider,
@@ -11,53 +10,14 @@
         Button,
     } from "@svelteuidev/core";
     import { DateInput } from "date-picker-svelte";
-    import { browser } from "$app/environment";
+    import { countdowns, removeCountdown, updateCountdown, addCountdown } from "$lib/localDB";
 
     // for modal
-    let opened: boolean;
-    let tempCountdown: Countdown;
-    let error: boolean;
-    $: {
-        opened = false;
-        tempCountdown = { title: "", start: new Date(), end: new Date() };
-        error = false;
-    }
+    let opened = false;
+    let tempCountdown: Countdown = { title: "", start: new Date(), end: new Date() };
+    let error: boolean = false;
 
-    // countdowns
-    const defaultData: Data = {
-        Example: {
-            title: "Example",
-            start: new Date("2000-01-01"),
-            end: new Date("2100-01-01"),
-        },
-    };
-
-    let countdowns: Data = {};
-    if (browser) {
-        try {
-            countdowns = JSON.parse(localStorage.getItem("countdowns")!);
-            if (countdowns === null) countdowns = defaultData;
-            else {
-                for (const countdown of Object.values(countdowns)) {
-                    countdown.start = new Date(countdown.start);
-                    countdown.end = new Date(countdown.end);
-                }
-            }
-        } catch {
-            countdowns = defaultData;
-        }
-    }
-
-    function removeCountdown(title: string) {
-        delete countdowns[title];
-        countdowns = countdowns;
-        setLocalStorage();
-    }
-
-    function setLocalStorage() {
-        localStorage.setItem("countdowns", JSON.stringify(countdowns));
-    }
-
+    // update blocks every second
     let currentDate = new Date();
     setInterval(() => {
         currentDate = new Date();
@@ -76,7 +36,6 @@
                     {countdown}
                     {currentDate}
                     {removeCountdown}
-                    {setLocalStorage}
                 />
             {/each}
             <Button
@@ -124,22 +83,20 @@
     <Button
         color="green"
         on:click={() => {
+            // remove all non-alphanumeric characters
+            tempCountdown.title = tempCountdown.title.replace(
+                /[^a-z0-9]/gi,
+                ""
+            );
+
             if (
                 tempCountdown.title === "" ||
                 Object.keys(countdowns).includes(tempCountdown.title) ||
                 tempCountdown.title.length > 10
-            ) {
-                error = true;
-            } else {
+            ) error = true;
+            else {
                 error = false;
-                // remove all non-alphanumeric characters
-                tempCountdown.title = tempCountdown.title.replace(
-                    /[^a-z0-9]/gi,
-                    ""
-                );
-                countdowns[tempCountdown.title] = tempCountdown;
-                countdowns = countdowns;
-                setLocalStorage();
+                addCountdown(tempCountdown);
                 opened = false;
             }
         }}
