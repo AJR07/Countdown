@@ -1,6 +1,6 @@
-import type Data from "../../types/data";
+import type { Data } from "../../types/data";
 import { browser } from "$app/environment";
-import type Countdown from "../../types/countdown";
+import type { Countdown } from "../../types/countdown";
 
 export function load({ url }): {
     body: string | Countdown;

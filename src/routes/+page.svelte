@@ -1,4 +1,5 @@
 <script lang="ts">
+    import type { Data } from "./../types/data.ts";
     import Auth from "../components/Auth.svelte";
     import Block from "../components/Block.svelte";
     import type { Countdown } from "../types/countdown";
@@ -10,7 +11,7 @@
         Button,
     } from "@svelteuidev/core";
     import { DateInput } from "date-picker-svelte";
-    import { countdowns, addCountdown } from "$lib/localDB";
+    import { subscribeToCountdown, addCountdown } from "$lib/localDB";
 
     // for modal
     let opened = false;
@@ -20,6 +21,12 @@
         end: new Date(),
     };
     let error: boolean = false;
+
+    // set countdown subscription
+    let countdowns: Data = {};
+    subscribeToCountdown((newCountdowns) => {
+        countdowns = newCountdowns;
+    });
 
     // update blocks every second
     let currentDate = new Date();
