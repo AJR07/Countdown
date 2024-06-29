@@ -2,8 +2,7 @@
     import { Modal, ActionIcon, Textarea } from "@svelteuidev/core";
     import { Pencil2, Trash, Share1 } from "radix-icons-svelte";
     import { DateInput } from "date-picker-svelte";
-    import Countdown from "../types/countdown";
-    import ProcessedDate from "../types/date";
+    import type { Countdown } from "../types/countdown";
     import GetTimeLeft from "../utils/gettimeleft";
     import Number from "./Number.svelte";
     import { updateCountdown } from "$lib/localDB";
@@ -14,12 +13,15 @@
     export let removeCountdown: (title: string) => void;
 
     // states
-    let newTitle = countdown.title, newEnd = countdown.end;
+    let newTitle = countdown.title,
+        newEnd = countdown.end;
     let opened = false; // modal 1 - edit
     let opened2 = false; // modal 2 - share
 
     // progress bar
-    let timeLeft: ProcessedDate, totalTime: ProcessedDate, percent: number;
+    let timeLeft: ReturnType<typeof GetTimeLeft>,
+        totalTime: ReturnType<typeof GetTimeLeft>,
+        percent: number;
 
     $: {
         timeLeft = GetTimeLeft(countdown.end, currentDate);
@@ -96,7 +98,11 @@
     {opened}
     on:close={() => {
         opened = false;
-        updateCountdown(countdown.title, {title: newTitle, start: countdown.start, end: newEnd});
+        updateCountdown(countdown.title, {
+            title: newTitle,
+            start: countdown.start,
+            end: newEnd,
+        });
     }}
     title={`Edit The Countdown: ${countdown.title}`}
 >

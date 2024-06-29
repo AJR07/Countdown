@@ -33,6 +33,7 @@
     },
     "type": "module",
     "dependencies": {
+        "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
         "@supabase/supabase-js": "^2.44.0",
         "@svelteuidev/composables": "^0.15.3",
         "@svelteuidev/core": "^0.15.3",

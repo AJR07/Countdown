@@ -28,7 +28,7 @@
         signInEmail = "",
         alertSignIn = false,
         alertSignOut = false,
-        alertRateLimited = false;    
+        alertRateLimited = false;
 </script>
 
 <!-- Main Auth Content - Sign In and Out -->

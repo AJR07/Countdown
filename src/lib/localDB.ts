@@ -1,6 +1,6 @@
 import { browser } from "$app/environment";
-import Countdown from "../types/countdown";
-import Data from "../types/data";
+import type { Countdown } from "../types/countdown";
+import type { Data } from "../types/data";
 
 const defaultData: Data = {
     Example: {

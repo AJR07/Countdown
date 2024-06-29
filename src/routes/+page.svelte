@@ -10,11 +10,20 @@
         Button,
     } from "@svelteuidev/core";
     import { DateInput } from "date-picker-svelte";
-    import { countdowns, removeCountdown, updateCountdown, addCountdown } from "$lib/localDB";
+    import {
+        countdowns,
+        removeCountdown,
+        updateCountdown,
+        addCountdown,
+    } from "$lib/localDB";
 
     // for modal
     let opened = false;
-    let tempCountdown: Countdown = { title: "", start: new Date(), end: new Date() };
+    let tempCountdown: Countdown = {
+        title: "",
+        start: new Date(),
+        end: new Date(),
+    };
     let error: boolean = false;
 
     // update blocks every second
@@ -32,11 +41,7 @@
         <div id="main-page-container">
             <Auth />
             {#each Object.values(countdowns) as countdown}
-                <Block
-                    {countdown}
-                    {currentDate}
-                    {removeCountdown}
-                />
+                <Block {countdown} {currentDate} {removeCountdown} />
             {/each}
             <Button
                 fullSize
@@ -93,7 +98,8 @@
                 tempCountdown.title === "" ||
                 Object.keys(countdowns).includes(tempCountdown.title) ||
                 tempCountdown.title.length > 10
-            ) error = true;
+            )
+                error = true;
             else {
                 error = false;
                 addCountdown(tempCountdown);
