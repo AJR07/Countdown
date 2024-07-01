@@ -1,15 +1,17 @@
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
 import Countdowns from "../schema/countdowns";
 import { and, eq } from "drizzle-orm";
-
-const connectionString = import.meta.env.VITE_DATABASE_URL!;
+import { sql } from "@vercel/postgres";
+import { drizzle } from "drizzle-orm/vercel-postgres";
 
 // Disable prefetch as it is not supported for "Transaction" pool mode
-const client = postgres(connectionString, { prepare: false });
-const db = drizzle(client, { schema: { Countdowns } });
+
+console.log(process.env.POSTGRES_URL);
+
+const db = drizzle(sql, { schema: { Countdowns } });
 
 export async function getCountdownsForUser(id: string) {
+    console.log(process.env.POSTGRES_URL);
+
     return await db.query.Countdowns.findMany({
         where: eq(Countdowns.id, id),
     });

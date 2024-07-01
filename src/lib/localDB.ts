@@ -5,13 +5,14 @@ import { getCountdownsForUser } from "./postgresDB";
 import { supabase } from "./supabase";
 
 // initialize countdowns to default data
-let countdowns: Data = {
+const defaultData = {
     Example: {
         title: "Example",
         start: new Date("2000-01-01"),
         end: new Date("2100-01-01"),
     },
 };
+let countdowns: Data = defaultData;
 
 if (browser) {
     // IF signed in, load from postgresDB and sync with localStorage
@@ -36,8 +37,11 @@ if (browser) {
                     countdown.start = new Date(countdown.start);
                     countdown.end = new Date(countdown.end);
                 }
-            }
-        } catch {} // Else, use default data.
+            } else countdowns = defaultData;
+        } catch {
+            // Else, use default data.
+            countdowns = defaultData;
+        }
     }
 }
 
