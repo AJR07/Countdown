@@ -1,10 +1,28 @@
+import { type Data } from "../types/data";
 import { supabase } from "./supabase";
 
 export async function getCountdownsForUser(id: string) {
     let { data, error } = await supabase
         .from("Countdowns")
         .select("*")
-        .eq("id", id);
+        .eq("id", id)
+        .single();
+
+    if (error) {
+        console.error(error);
+        return null;
+    }
+
+    return data;
+}
+
+export async function createCountdownsRowForUser(
+    id: string,
+    defaultData: Data
+) {
+    let { data, error } = await supabase
+        .from("Countdowns")
+        .insert({ id, countdowns: defaultData });
 
     if (error) {
         throw error;
@@ -12,53 +30,14 @@ export async function getCountdownsForUser(id: string) {
     return data;
 }
 
-export async function createCountdownPG(
-    id: string,
-    title: string,
-    start: Date,
-    end: Date
-) {
-    let { error } = await supabase.from("Countdowns").insert({
-        id,
-        title,
-        start,
-        end,
-    });
-    if (error) {
-        throw error;
-    }
-}
-
-export async function updateCountdownPG(
-    id: string,
-    oldTitle: string,
-    title: string,
-    start: Date,
-    end: Date
-) {
-    console.log(id, oldTitle, title, start, end);
-    let { error } = await supabase
+export async function updateCountdownsRowForUser(id: string, countdowns: Data) {
+    let { data, error } = await supabase
         .from("Countdowns")
-        .update({
-            title: title,
-            start: start,
-            end: end,
-        })
-        .eq("id", id)
-        .eq("title", oldTitle);
+        .update({ countdowns })
+        .eq("id", id);
 
     if (error) {
         throw error;
     }
-}
-
-export async function removeCountdownPG(id: string, title: string) {
-    let { error } = await supabase
-        .from("Countdowns")
-        .delete()
-        .eq("id", id)
-        .eq("title", title);
-    if (error) {
-        throw error;
-    }
+    return data;
 }

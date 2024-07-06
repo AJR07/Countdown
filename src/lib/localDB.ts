@@ -2,10 +2,9 @@ import { browser } from "$app/environment";
 import type { Countdown } from "../types/countdown";
 import type { Data } from "../types/data";
 import {
-    createCountdownPG,
+    createCountdownsRowForUser,
     getCountdownsForUser,
-    removeCountdownPG,
-    updateCountdownPG,
+    updateCountdownsRowForUser,
 } from "./postgresDB";
 import { supabase } from "./supabase";
 
@@ -23,10 +22,19 @@ let countdowns: Data = {},
 if (browser) {
     // IF signed in, load from postgresDB and sync with localStorage
     if (user.data.user) {
-        let countdownData =
-            (await getCountdownsForUser(user.data.user.id)) ?? [];
-        countdowns = {};
-        for (const countdown of countdownData) {
+        let dbCountdownData = await getCountdownsForUser(user.data.user.id);
+
+        // if user does not have a row in the database, create one
+        let countdownData: Data;
+        if (!dbCountdownData) {
+            await createCountdownsRowForUser(user.data.user.id, defaultData);
+            countdownData = defaultData;
+        } else countdownData = dbCountdownData.countdowns as Data;
+
+        // convert countdownData to countdowns
+        console.log(countdownData);
+        for (const countdownTitle in countdownData) {
+            const countdown = countdownData[countdownTitle];
             countdowns[countdown.title!] = {
                 title: countdown.title!,
                 start: new Date(countdown.start!),
@@ -66,39 +74,26 @@ export function subscribeToCountdown(callback: (countdowns: Data) => void) {
 export function removeCountdown(title: string) {
     delete countdowns[title];
     countdowns = countdowns;
-    setLocalStorage();
-    if (user.data.user) removeCountdownPG(user.data.user.id, title);
+    updateLocalStorageAndPG();
 }
 
 export function updateCountdown(originalTitle: string, countdown: Countdown) {
     removeCountdown(originalTitle);
     countdowns[countdown.title] = countdown;
-    setLocalStorage();
-    if (user.data.user)
-        updateCountdownPG(
-            user.data.user.id,
-            originalTitle,
-            countdown.title,
-            countdown.start,
-            countdown.end
-        );
+    updateLocalStorageAndPG();
 }
 
 export function addCountdown(countdown: Countdown) {
     countdowns[countdown.title] = countdown;
-    setLocalStorage();
-    if (user.data.user)
-        createCountdownPG(
-            user.data.user.id,
-            countdown.title,
-            countdown.start,
-            countdown.end
-        );
+    updateLocalStorageAndPG();
 }
 
-function setLocalStorage() {
+function updateLocalStorageAndPG() {
     localStorage.setItem("countdowns", JSON.stringify(countdowns));
     for (const subscription of subscriptions) {
         subscription(Object.assign({}, countdowns));
     }
+
+    if (user.data.user)
+        updateCountdownsRowForUser(user.data.user.id, countdowns);
 }

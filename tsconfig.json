@@ -13,6 +13,8 @@
         "sourceMap": true,
         "strict": true,
         "importsNotUsedAsValues": "remove",
-        "isolatedModules": false
+        "isolatedModules": false,
+        "lib": ["es5", "es6", "dom", "dom.iterable"],
+        "downlevelIteration": true
     }
 }
