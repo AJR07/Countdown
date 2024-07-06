@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type Countdown from "../../types/countdown";
+    import { type Countdown } from "../../types/countdown";
 
     export let data: {
         body: Countdown | string;

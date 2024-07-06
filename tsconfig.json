@@ -1,5 +1,8 @@
 {
     "extends": "./.svelte-kit/tsconfig.json",
+    "module": "esnext",
+    "target": "ESNext",
+    "moduleResolution": "Node",
     "compilerOptions": {
         "allowJs": true,
         "checkJs": true,
@@ -10,6 +13,8 @@
         "sourceMap": true,
         "strict": true,
         "importsNotUsedAsValues": "remove",
-        "isolatedModules": false
+        "isolatedModules": false,
+        "lib": ["es5", "es6", "dom", "dom.iterable"],
+        "downlevelIteration": true
     }
 }

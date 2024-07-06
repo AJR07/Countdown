@@ -1,15 +1,28 @@
 <script lang="ts">
-    import { signInWithEmailMagicLink, signOut, supabase } from "$lib/supabase";
+    import { supabase } from "$lib/supabase";
+    import { signInWithEmailMagicLink, signOut } from "$lib/auth";
     import { type UserResponse } from "@supabase/supabase-js";
     import { Alert, Badge, Button, Input, Modal } from "@svelteuidev/core";
     import { Enter, EnvelopeClosed, Exit } from "radix-icons-svelte";
     import { page } from "$app/stores";
+    import { getCountdownsForUser } from "$lib/postgresDB";
 
+    // get user data
     let user: UserResponse | null = null;
     supabase.auth.getUser().then((userData) => {
         user = userData;
     });
 
+    $: {
+        // if user is signed in, start syncing database
+        if (user && user.data.user) {
+            getCountdownsForUser(user.data.user.id).then((countdowns) => {
+                // do something with countdowns
+            });
+        }
+    }
+
+    // states
     let showSignInModal = false,
         showSignOutModal = false,
         signInEmail = "",

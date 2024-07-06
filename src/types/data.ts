@@ -1,7 +1,5 @@
-import Countdown from "./countdown";
+import type { Countdown } from "./countdown";
 
-type Data = {
+export type Data = {
     [id: string]: Countdown;
 };
-
-export default Data;
