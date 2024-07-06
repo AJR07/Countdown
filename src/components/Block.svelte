@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Modal, ActionIcon, Textarea } from "@svelteuidev/core";
+    import { Modal, ActionIcon, Textarea, Button } from "@svelteuidev/core";
     import { Pencil2, Trash, Share1 } from "radix-icons-svelte";
     import { DateInput } from "date-picker-svelte";
     import type { Countdown } from "../types/countdown";
@@ -96,12 +96,10 @@
 <Modal
     {opened}
     on:close={() => {
+        // don't save
+        newTitle = countdown.title;
+        newEnd = countdown.end;
         opened = false;
-        updateCountdown(countdown.title, {
-            title: newTitle,
-            start: countdown.start,
-            end: newEnd,
-        });
     }}
     title={`Edit The Countdown: ${countdown.title}`}
 >
@@ -114,6 +112,20 @@
         max={new Date("2100-01-01")}
         closeOnSelection={true}
     />
+    <Button
+        on:click={() => {
+            opened = false;
+            updateCountdown(countdown.title, {
+                title: newTitle,
+                start: countdown.start,
+                end: newEnd,
+            });
+        }}
+        color="green"
+        override={{ marginTop: "10px" }}
+    >
+        Save
+    </Button>
 </Modal>
 
 <!-- Share -->

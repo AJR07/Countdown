@@ -1,22 +1,12 @@
-import type { Data } from "../../types/data";
 import { browser } from "$app/environment";
 import type { Countdown } from "../../types/countdown";
+import { addCountdown, getCountdowns } from "$lib/localDB";
 
 export function load({ url }): {
     body: string | Countdown;
 } {
     if (browser) {
-        // default countdown
-        let countdowns: Data =
-            localStorage.getItem("countdowns") !== null
-                ? JSON.parse(localStorage.getItem("countdowns")!)
-                : {
-                      Example: {
-                          title: "Example",
-                          start: new Date("2000-01-01"),
-                          end: new Date("2100-01-01"),
-                      },
-                  };
+        let countdowns = getCountdowns();
 
         // get parameters
         let title = url.searchParams.get("title"),
@@ -35,14 +25,14 @@ export function load({ url }): {
 
         title = title.replace(/[^a-z0-9]/gi, "");
 
-        countdowns[title] = {
+        let newCountdown: Countdown = {
+            title,
             start: new Date(start),
             end: new Date(end),
-            title: title,
         };
-        localStorage.setItem("countdowns", JSON.stringify(countdowns));
+        addCountdown(newCountdown);
         return {
-            body: { title: title, start: new Date(start), end: new Date(end) },
+            body: newCountdown,
         };
     }
     return { body: "undefined" };

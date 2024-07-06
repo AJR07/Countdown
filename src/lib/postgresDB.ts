@@ -1,54 +1,64 @@
-import Countdowns from "../schema/countdowns";
-import { and, eq } from "drizzle-orm";
-import { sql } from "@vercel/postgres";
-import { drizzle } from "drizzle-orm/vercel-postgres";
-
-// Disable prefetch as it is not supported for "Transaction" pool mode
-
-console.log(process.env.POSTGRES_URL);
-
-const db = drizzle(sql, { schema: { Countdowns } });
+import { supabase } from "./supabase";
 
 export async function getCountdownsForUser(id: string) {
-    console.log(process.env.POSTGRES_URL);
+    let { data, error } = await supabase
+        .from("Countdowns")
+        .select("*")
+        .eq("id", id);
 
-    return await db.query.Countdowns.findMany({
-        where: eq(Countdowns.id, id),
-    });
+    if (error) {
+        throw error;
+    }
+    return data;
 }
 
-export async function createCountdown(
+export async function createCountdownPG(
     id: string,
     title: string,
     start: Date,
     end: Date
 ) {
-    return await db.insert(Countdowns).values({
+    let { error } = await supabase.from("Countdowns").insert({
         id,
         title,
         start,
         end,
     });
+    if (error) {
+        throw error;
+    }
 }
 
-export async function updateCountdown(
+export async function updateCountdownPG(
     id: string,
+    oldTitle: string,
     title: string,
     start: Date,
     end: Date
 ) {
-    return await db
-        .update(Countdowns)
-        .set({
-            title,
-            start,
-            end,
+    console.log(id, oldTitle, title, start, end);
+    let { error } = await supabase
+        .from("Countdowns")
+        .update({
+            title: title,
+            start: start,
+            end: end,
         })
-        .where(eq(Countdowns.id, id));
+        .eq("id", id)
+        .eq("title", oldTitle);
+
+    if (error) {
+        throw error;
+    }
 }
 
-export async function deleteCountdown(id: string, title: string) {
-    return await db
-        .delete(Countdowns)
-        .where(and(eq(Countdowns.id, id), eq(Countdowns.title, title)));
+export async function removeCountdownPG(id: string, title: string) {
+    let { error } = await supabase
+        .from("Countdowns")
+        .delete()
+        .eq("id", id)
+        .eq("title", title);
+    if (error) {
+        throw error;
+    }
 }
